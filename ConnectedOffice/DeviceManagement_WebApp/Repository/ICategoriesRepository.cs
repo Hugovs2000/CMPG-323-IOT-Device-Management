@@ -2,7 +2,7 @@
 
 namespace DeviceManagement_WebApp.Repository
 {
-    public interface ICategoryRepository : IGenericRepository<Category>
+    public interface ICategoriesRepository : IGenericRepository<Category>
     {
         Category GetMostRecentCategory();
     }

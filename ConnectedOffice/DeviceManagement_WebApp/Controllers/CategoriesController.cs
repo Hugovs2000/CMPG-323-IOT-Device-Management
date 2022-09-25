@@ -8,13 +8,14 @@ using Microsoft.EntityFrameworkCore;
 using DeviceManagement_WebApp.Data;
 using DeviceManagement_WebApp.Models;
 using DeviceManagement_WebApp.Repository;
+using System.Xaml.Permissions;
 
 namespace DeviceManagement_WebApp.Controllers
 {
     public class CategoriesController : Controller
     {
-        private readonly ICategoryRepository _categoryRepository;
-        public CategoriesController(ICategoryRepository categoryRepository)
+        private readonly ICategoriesRepository _categoryRepository;
+        public CategoriesController(ICategoriesRepository categoryRepository)
         {
             _categoryRepository = categoryRepository;
         }
@@ -23,6 +24,6 @@ namespace DeviceManagement_WebApp.Controllers
         public async Task<IActionResult> Index()
         {
             return View(_categoryRepository.GetAll());
-        }
+        }      
     }
 }
