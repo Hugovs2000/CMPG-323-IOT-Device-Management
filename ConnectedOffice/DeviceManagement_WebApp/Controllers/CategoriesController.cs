@@ -9,6 +9,7 @@ using DeviceManagement_WebApp.Data;
 using DeviceManagement_WebApp.Models;
 using DeviceManagement_WebApp.Repository;
 using System.Xaml.Permissions;
+using System.Security.Policy;
 
 namespace DeviceManagement_WebApp.Controllers
 {
@@ -29,10 +30,17 @@ namespace DeviceManagement_WebApp.Controllers
         // GET: Categories/Details/5
         public async Task<IActionResult> Details(Guid id)
         {
-            if(id == Guid.Empty)
+            if (id == null)
             {
                 return NotFound();
             }
+
+            var category = _categoryRepository.GetById(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+
             return View(_categoryRepository.GetById(id));
         }
 
@@ -58,7 +66,12 @@ namespace DeviceManagement_WebApp.Controllers
         // GET: Categories/Delete/5
         public async Task<IActionResult> Delete(Guid id)
         {
-            if (id == Guid.Empty)
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            if (_categoryRepository.GetById(id) == null)
             {
                 return NotFound();
             }
@@ -79,12 +92,12 @@ namespace DeviceManagement_WebApp.Controllers
         // GET: Devices/Edit/5
         public async Task<IActionResult> Edit(Guid id)
         {
-            if (id == Guid.Empty)
+            var category = _categoryRepository.GetById(id);
+            if (id != category.CategoryId)
             {
                 return NotFound();
             }
-
-            var category = _categoryRepository.GetById(id);
+            
             if (category == null)
             {
                 return NotFound();
@@ -111,7 +124,7 @@ namespace DeviceManagement_WebApp.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (id == Guid.Empty)
+                if (id == null)
                 {
                     return NotFound();
                 }
@@ -121,6 +134,6 @@ namespace DeviceManagement_WebApp.Controllers
                 }
             }
             return RedirectToAction(nameof(Index));
-        }       
+        }
     }
 }

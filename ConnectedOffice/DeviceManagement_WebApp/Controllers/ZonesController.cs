@@ -7,40 +7,42 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DeviceManagement_WebApp.Data;
 using DeviceManagement_WebApp.Models;
+using DeviceManagement_WebApp.Repository;
+using System.Xaml.Permissions;
+using System.Security.Policy;
+using Zone = DeviceManagement_WebApp.Models.Zone;
 
 namespace DeviceManagement_WebApp.Controllers
 {
     public class ZonesController : Controller
     {
-        private readonly ConnectedOfficeContext _context;
-
-        public ZonesController(ConnectedOfficeContext context)
+        private readonly IZonesRepository _zonesRepository;
+        public ZonesController(IZonesRepository zonesRepository)
         {
-            _context = context;
+            _zonesRepository = zonesRepository;
         }
 
         // GET: Zones
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Zone.ToListAsync());
+            return View(_zonesRepository.GetAll());
         }
 
         // GET: Zones/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public async Task<IActionResult> Details(Guid id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var zone = await _context.Zone
-                .FirstOrDefaultAsync(m => m.ZoneId == id);
+            var zone = _zonesRepository.GetById(id);
             if (zone == null)
             {
                 return NotFound();
             }
 
-            return View(zone);
+            return View(_zonesRepository.GetById(id));
         }
 
         // GET: Zones/Create
@@ -54,28 +56,54 @@ namespace DeviceManagement_WebApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ZoneId,ZoneName,ZoneDescription,DateCreated")] Zone zone)
+        public async Task<IActionResult> Create([Bind("ZoneId,ZoneName,ZoneDescription,DateCreated,Device")] Zone zone)
         {
             zone.ZoneId = Guid.NewGuid();
-            _context.Add(zone);
-            await _context.SaveChangesAsync();
-
+            _zonesRepository.Add(zone);
+            _zonesRepository.Save();
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Zones/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        // GET: Zones/Delete/5
+        public async Task<IActionResult> Delete(Guid id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var zone = await _context.Zone.FindAsync(id);
+            if (_zonesRepository.GetById(id) == null)
+            {
+                return NotFound();
+            }
+
+            return View(_zonesRepository.GetById(id));
+        }
+
+        // POST: Zones/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        {
+            _zonesRepository.Remove(_zonesRepository.GetById(id));
+            _zonesRepository.Save();
+            return RedirectToAction(nameof(Index));
+        }
+
+        // GET: Zones/Edit/5
+        public async Task<IActionResult> Edit(Guid id)
+        {
+            var zone = _zonesRepository.GetById(id);
+            if (id != zone.ZoneId)
+            {
+                return NotFound();
+            }
+
             if (zone == null)
             {
                 return NotFound();
             }
+
             return View(zone);
         }
 
@@ -84,21 +112,20 @@ namespace DeviceManagement_WebApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("ZoneId,ZoneName,ZoneDescription,DateCreated")] Zone zone)
+        public async Task<IActionResult> Edit(Guid id, [Bind("ZoneId,ZoneName,ZoneDescription,DateCreated,Device")] Zone zone)
         {
             if (id != zone.ZoneId)
             {
                 return NotFound();
             }
-
             try
             {
-                _context.Update(zone);
-                await _context.SaveChangesAsync();
+                _zonesRepository.Update(zone);
+                _zonesRepository.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ZoneExists(zone.ZoneId))
+                if (id == null)
                 {
                     return NotFound();
                 }
@@ -108,41 +135,6 @@ namespace DeviceManagement_WebApp.Controllers
                 }
             }
             return RedirectToAction(nameof(Index));
-
-        }
-
-        // GET: Zones/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var zone = await _context.Zone
-                .FirstOrDefaultAsync(m => m.ZoneId == id);
-            if (zone == null)
-            {
-                return NotFound();
-            }
-
-            return View(zone);
-        }
-
-        // POST: Zones/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
-        {
-            var zone = await _context.Zone.FindAsync(id);
-            _context.Zone.Remove(zone);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool ZoneExists(Guid id)
-        {
-            return _context.Zone.Any(e => e.ZoneId == id);
         }
     }
 }
