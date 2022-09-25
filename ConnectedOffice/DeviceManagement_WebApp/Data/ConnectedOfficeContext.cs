@@ -28,7 +28,7 @@ namespace DeviceManagement_WebApp.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("");
+                optionsBuilder.UseSqlServer("Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=ConnectedOffice;Data Source=DESKTOP-FHNM389");
             }
         }
 
