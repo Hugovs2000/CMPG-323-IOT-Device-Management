@@ -2,6 +2,7 @@
 using DeviceManagement_WebApp.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Configuration;
 
 // Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
 // If you have enabled NRTs for your project, then un-comment the following line:
@@ -23,6 +24,14 @@ namespace DeviceManagement_WebApp.Data
         public virtual DbSet<Category> Category { get; set; }
         public virtual DbSet<Device> Device { get; set; }
         public virtual DbSet<Zone> Zone { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer("DefaultConnection");
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
