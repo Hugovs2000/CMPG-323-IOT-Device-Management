@@ -1,5 +1,5 @@
 # CMPG 323 Project 3 IOT-Device-Management - 31586872
-This repository contains the code for the Web App implemented with the Tier 2 Repository Pattern.
+This repository contains the code for the Web App implemented with the Tier 2 Repository Pattern. The original code was provided by https://github.com/JacquiM/CMPG-323-IOT-Device-Management.
 
 ## Branching Strategy:
 A development branch was used to edit project without affecting the main branch. The main and development branch was then merged when the project was completed.
