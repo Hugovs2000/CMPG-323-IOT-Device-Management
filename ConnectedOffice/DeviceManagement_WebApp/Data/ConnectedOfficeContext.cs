@@ -2,6 +2,7 @@
 using DeviceManagement_WebApp.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Configuration;
 
 // Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
 // If you have enabled NRTs for your project, then un-comment the following line:
@@ -28,7 +29,7 @@ namespace DeviceManagement_WebApp.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("");
+                optionsBuilder.UseSqlServer("DefaultConnection");
             }
         }
 

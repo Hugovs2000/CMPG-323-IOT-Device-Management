@@ -41,7 +41,7 @@ namespace DeviceManagement_WebApp.Controllers
                 return NotFound();
             }
 
-            return View(_categoryRepository.GetById(id));
+            return View(category);
         }
 
         // GET: Categories/Create
