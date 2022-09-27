@@ -10,9 +10,11 @@ using DeviceManagement_WebApp.Models;
 using DeviceManagement_WebApp.Repository;
 using System.Xaml.Permissions;
 using System.Security.Policy;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DeviceManagement_WebApp.Controllers
 {
+    [Authorize]
     public class CategoriesController : Controller
     {
         private readonly ICategoriesRepository _categoryRepository;
